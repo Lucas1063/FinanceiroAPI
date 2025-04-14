@@ -1,0 +1,35 @@
+﻿using Calculadora_de_gastos.Models;
+using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+
+namespace Calculadora_de_gastos.Models
+{
+    public class Movimentacao
+    {
+        public int Id { get; set; }
+        public string Descricao { get; set; }
+        public decimal Valor { get; set; }
+
+        [Column(TypeName = "timestamp with time zone")]
+        public DateTime Data { get; set; }
+
+        public bool Fixo { get; set; }
+
+        public int TipoMovimentacaoId { get; set; }
+
+        [ForeignKey("TipoMovimentacaoId")]
+        public virtual TipoMovimentacao TipoMovimentacao { get; set; }
+
+        public int CategoriaId { get; set; }
+
+        [ForeignKey("CategoriaId")]
+        public virtual Categoria Categoria { get; set; }
+
+        public int UsuarioId { get; set; }
+
+        [ForeignKey("UsuarioId")]
+        public virtual Usuario Usuario { get; set; }
+    }
+}
