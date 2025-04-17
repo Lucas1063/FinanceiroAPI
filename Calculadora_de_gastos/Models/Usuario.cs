@@ -10,8 +10,6 @@ namespace Calculadora_de_gastos.Models
         public string Nome { get; set; }
         public string Email { get; set; }
         public string SenhaHash { get; set; }
-        public virtual ICollection<Movimentacao> Movimentacoes { get; set; }
-        public virtual ICollection<Categoria> Categorias { get; set; }
-    }
 
+    }
 }

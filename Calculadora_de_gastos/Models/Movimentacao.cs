@@ -19,21 +19,16 @@ namespace Calculadora_de_gastos.Models
         public bool Fixo { get; set; }
 
         public int TipoMovimentacaoId { get; set; }
-
-        [ForeignKey("TipoMovimentacaoId")]
-        [JsonIgnore]
-        public virtual TipoMovimentacao TipoMovimentacao { get; set; }
+  
+        public TipoMovimentacao? TipoMovimentacao { get; set; }
 
         public int CategoriaId { get; set; }
 
-        [ForeignKey("CategoriaId")]
-        [JsonIgnore]
-        public virtual Categoria Categoria { get; set; }
+   
+        public Categoria? Categoria { get; set; }
 
         public int UsuarioId { get; set; }
 
-        [ForeignKey("UsuarioId")]
-        [JsonIgnore]
-        public virtual Usuario Usuario { get; set; }
+        public Usuario? Usuario { get; set; }
     }
 }

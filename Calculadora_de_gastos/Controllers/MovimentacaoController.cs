@@ -28,7 +28,7 @@ namespace Calculadora_de_gastos.Controllers
                 .ToListAsync();
         }
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movimentacao>> GetById(int id)
+        public async Task<ActionResult<Movimentacao>> GetById(int id) //fazer o get pelo ID do usuario // fazer get pelo ID da categoria // ID da receita
         {
             var movimentacao = await _context.Movimentacoes
                 .Include(m => m.CategoriaId)
@@ -52,7 +52,7 @@ namespace Calculadora_de_gastos.Controllers
 
             return dto;
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Movimentacao movimentacao)
         {
@@ -65,7 +65,7 @@ namespace Calculadora_de_gastos.Controllers
                 {
                     Descricao = movimentacao.Descricao,
                     Valor = movimentacao.Valor,
-                    Data = movimentacao.Data,
+                    Data = DateTime.SpecifyKind(movimentacao.Data, DateTimeKind.Utc),
                     Fixo = movimentacao.Fixo,
                     TipoMovimentacaoId = movimentacao.TipoMovimentacaoId,
                     CategoriaId = movimentacao.CategoriaId,
@@ -79,9 +79,13 @@ namespace Calculadora_de_gastos.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao salvar movimentação: {ex.Message}");
+                // Captura erro interno (InnerException), se existir
+                var innerMessage = ex.InnerException != null ? ex.InnerException.Message : "Sem detalhes adicionais.";
+
+                return StatusCode(500, $"Erro ao salvar movimentação: {ex.Message} | Detalhes: {innerMessage}");
             }
         }
+
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovimentacao(int id, [FromBody] Movimentacao dto)
         {
@@ -91,7 +95,7 @@ namespace Calculadora_de_gastos.Controllers
                 return NotFound();
 
             // Atualizar os campos
-            movimentacaoExistente.Descricao = dto.Descricao;
+            movimentacaoExistente.Descricao =Descricao;
             movimentacaoExistente.Valor = dto.Valor;
             movimentacaoExistente.Data = dto.Data;
             movimentacaoExistente.Fixo = dto.Fixo;
