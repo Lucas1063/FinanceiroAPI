@@ -52,39 +52,36 @@ namespace Calculadora_de_gastos.Controllers
 
             return dto;
         }
+        
         [HttpPost]
-        public async Task<IActionResult> Post([FromBody] Movimentacao dto)
+        public async Task<IActionResult> Post([FromBody] Movimentacao movimentacao)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var movimentacao = new Movimentacao
+                var novaMovimentacao = new Movimentacao
                 {
-                    Descricao = dto.Descricao,
-                    Valor = dto.Valor,
-                    Data = dto.Data,
-                    Fixo = dto.Fixo,
-                    TipoMovimentacaoId = dto.TipoMovimentacaoId,
-                    CategoriaId = dto.CategoriaId,
-                    UsuarioId = dto.UsuarioId
+                    Descricao = movimentacao.Descricao,
+                    Valor = movimentacao.Valor,
+                    Data = movimentacao.Data,
+                    Fixo = movimentacao.Fixo,
+                    TipoMovimentacaoId = movimentacao.TipoMovimentacaoId,
+                    CategoriaId = movimentacao.CategoriaId,
+                    UsuarioId = movimentacao.UsuarioId
                 };
 
-                await _context.Movimentacoes.AddAsync(movimentacao);
+                _context.Movimentacoes.Add(novaMovimentacao);
                 await _context.SaveChangesAsync();
 
-                return CreatedAtAction(nameof(GetById), new { id = movimentacao.Id }, movimentacao);
+                return CreatedAtAction(nameof(GetById), new { id = novaMovimentacao.Id }, novaMovimentacao);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Erro ao salvar movimentação: {ex.Message}");
             }
         }
-
-
-
-
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMovimentacao(int id, [FromBody] Movimentacao dto)
         {

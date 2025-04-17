@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 
 namespace Calculadora_de_gastos.Models
@@ -20,16 +21,19 @@ namespace Calculadora_de_gastos.Models
         public int TipoMovimentacaoId { get; set; }
 
         [ForeignKey("TipoMovimentacaoId")]
+        [JsonIgnore]
         public virtual TipoMovimentacao TipoMovimentacao { get; set; }
 
         public int CategoriaId { get; set; }
 
         [ForeignKey("CategoriaId")]
+        [JsonIgnore]
         public virtual Categoria Categoria { get; set; }
 
         public int UsuarioId { get; set; }
 
         [ForeignKey("UsuarioId")]
+        [JsonIgnore]
         public virtual Usuario Usuario { get; set; }
     }
 }
