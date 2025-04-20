@@ -22,36 +22,28 @@ namespace Calculadora_de_gastos.Controllers
         public async Task<ActionResult<IEnumerable<Movimentacao>>> GetMovimentacoes()
         {
             return await _context.Movimentacoes
-                .Include(m => m.CategoriaId)
-                .Include(m => m.TipoMovimentacaoId)
-                .Include(m => m.UsuarioId)
+                .Include(m => m.Categoria)
+                .Include(m => m.TipoMovimentacao)
+                .Include(m => m.Usuario)
                 .ToListAsync();
         }
+
         [HttpGet("{id}")]
-        public async Task<ActionResult<Movimentacao>> GetById(int id) //fazer o get pelo ID do usuario // fazer get pelo ID da categoria // ID da receita
+        public async Task<ActionResult<Movimentacao>> GetById(int id)
         {
             var movimentacao = await _context.Movimentacoes
-                .Include(m => m.CategoriaId)
-                .Include(m => m.TipoMovimentacaoId)
-                .Include(m => m.UsuarioId)
+                .Include(m => m.Categoria)
+                .Include(m => m.TipoMovimentacao)
+                .Include(m => m.Usuario)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (movimentacao == null)
                 return NotFound();
 
-            var dto = new Movimentacao
-            {
-                Descricao = movimentacao.Descricao,
-                Valor = movimentacao.Valor,
-                Data = movimentacao.Data,
-                Fixo = movimentacao.Fixo,
-                TipoMovimentacaoId = movimentacao.TipoMovimentacaoId,
-                CategoriaId = movimentacao.CategoriaId,
-                UsuarioId = movimentacao.UsuarioId
-            };
-
-            return dto;
+            return movimentacao;
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] Movimentacao movimentacao)
@@ -79,7 +71,6 @@ namespace Calculadora_de_gastos.Controllers
             }
             catch (Exception ex)
             {
-                // Captura erro interno (InnerException), se existir
                 var innerMessage = ex.InnerException != null ? ex.InnerException.Message : "Sem detalhes adicionais.";
 
                 return StatusCode(500, $"Erro ao salvar movimentação: {ex.Message} | Detalhes: {innerMessage}");
@@ -95,7 +86,7 @@ namespace Calculadora_de_gastos.Controllers
                 return NotFound();
 
             // Atualizar os campos
-            movimentacaoExistente.Descricao =Descricao;
+            movimentacaoExistente.Descricao = dto.Descricao;
             movimentacaoExistente.Valor = dto.Valor;
             movimentacaoExistente.Data = dto.Data;
             movimentacaoExistente.Fixo = dto.Fixo;
@@ -107,6 +98,7 @@ namespace Calculadora_de_gastos.Controllers
 
             return NoContent();
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteMovimentacao(int id)
