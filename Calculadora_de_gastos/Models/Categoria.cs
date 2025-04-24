@@ -8,7 +8,7 @@ namespace Calculadora_de_gastos.Models
     {
         public int Id { get; set; }
         public string Nome { get; set; }
-        public int UsuarioId { get; set; }
+
     }
 
 }
