@@ -6,7 +6,7 @@ import { format } from 'date-fns'
 import { movimentacaoService } from '../services/movimentacaoService'
 import { categoriaService } from '../services/categoriaService'
 import { tipoMovimentacaoService } from '../services/tipoMovimentacaoService'
-import { usuarioService } from '../services/usuarioService'
+import { usuarioService } from '../services/usuarioService.js'
 import Modal from '../components/Modal'
 import LoadingSpinner from '../components/LoadingSpinner'
 
