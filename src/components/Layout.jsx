@@ -2,25 +2,39 @@ import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { 
   Home, 
-  Users, 
   Tag, 
   ArrowUpDown, 
   CreditCard,
   Menu,
-  X
+  X,
+  LogOut,
+  User
 } from 'lucide-react'
 
-const Layout = ({ children }) => {
+const Layout = ({ children, onLogout }) => {
   const location = useLocation()
   const [sidebarOpen, setSidebarOpen] = React.useState(false)
+  const [currentUser, setCurrentUser] = React.useState(null)
+
+  React.useEffect(() => {
+    const user = localStorage.getItem('currentUser')
+    if (user) {
+      setCurrentUser(JSON.parse(user))
+    }
+  }, [])
 
   const navigation = [
     { name: 'Dashboard', href: '/', icon: Home },
-    { name: 'Usuários', href: '/usuarios', icon: Users },
     { name: 'Categorias', href: '/categorias', icon: Tag },
     { name: 'Tipos de Movimentação', href: '/tipos-movimentacao', icon: ArrowUpDown },
     { name: 'Movimentações', href: '/movimentacoes', icon: CreditCard },
   ]
+
+  const handleLogout = () => {
+    if (window.confirm('Tem certeza que deseja sair?')) {
+      onLogout()
+    }
+  }
 
   return (
     <div className="flex h-screen bg-gray-50">
@@ -47,7 +61,7 @@ const Layout = ({ children }) => {
           </button>
         </div>
         
-        <nav className="mt-8">
+        <nav className="mt-8 flex-1">
           <div className="px-4 space-y-2">
             {navigation.map((item) => {
               const isActive = location.pathname === item.href
@@ -71,6 +85,32 @@ const Layout = ({ children }) => {
             })}
           </div>
         </nav>
+
+        {/* User info and logout */}
+        <div className="border-t border-gray-200 p-4">
+          <div className="flex items-center mb-3">
+            <div className="flex-shrink-0">
+              <div className="h-8 w-8 bg-primary-100 rounded-full flex items-center justify-center">
+                <User className="h-4 w-4 text-primary-600" />
+              </div>
+            </div>
+            <div className="ml-3">
+              <p className="text-sm font-medium text-gray-900">
+                {currentUser?.nome || 'Usuário'}
+              </p>
+              <p className="text-xs text-gray-500">
+                {currentUser?.email || ''}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center px-3 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-colors"
+          >
+            <LogOut className="mr-3 h-4 w-4" />
+            Sair
+          </button>
+        </div>
       </div>
 
       {/* Main content */}
@@ -85,7 +125,12 @@ const Layout = ({ children }) => {
               <Menu className="h-6 w-6" />
             </button>
             <h1 className="text-lg font-semibold text-gray-900">Calculadora de Gastos</h1>
-            <div className="w-6" />
+            <button
+              onClick={handleLogout}
+              className="text-gray-500 hover:text-gray-600"
+            >
+              <LogOut className="h-5 w-5" />
+            </button>
           </div>
         </header>
 

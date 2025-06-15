@@ -1,13 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { Users, Tag, CreditCard, TrendingUp, TrendingDown } from 'lucide-react'
-import { usuarioService } from '../services/usuarioService'
+import { Tag, CreditCard, TrendingUp, TrendingDown } from 'lucide-react'
 import { categoriaService } from '../services/categoriaService'
 import { movimentacaoService } from '../services/movimentacaoService'
 import LoadingSpinner from '../components/LoadingSpinner'
 
 const Dashboard = () => {
   const [stats, setStats] = useState({
-    usuarios: 0,
     categorias: 0,
     movimentacoes: 0,
     totalReceitas: 0,
@@ -16,8 +14,13 @@ const Dashboard = () => {
   })
   const [loading, setLoading] = useState(true)
   const [recentMovimentacoes, setRecentMovimentacoes] = useState([])
+  const [currentUser, setCurrentUser] = useState(null)
 
   useEffect(() => {
+    const user = localStorage.getItem('currentUser')
+    if (user) {
+      setCurrentUser(JSON.parse(user))
+    }
     loadDashboardData()
   }, [])
 
@@ -25,8 +28,7 @@ const Dashboard = () => {
     try {
       setLoading(true)
       
-      const [usuariosRes, categoriasRes, movimentacoesRes] = await Promise.all([
-        usuarioService.getAll(),
+      const [categoriasRes, movimentacoesRes] = await Promise.all([
         categoriaService.getAll(),
         movimentacaoService.getAll()
       ])
@@ -39,7 +41,6 @@ const Dashboard = () => {
       const totalDespesas = despesas.reduce((sum, m) => sum + m.valor, 0)
 
       setStats({
-        usuarios: usuariosRes.data.length,
         categorias: categoriasRes.data.length,
         movimentacoes: movimentacoes.length,
         totalReceitas,
@@ -82,24 +83,14 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="text-gray-600">Visão geral das suas finanças</p>
+        <h1 className="text-2xl font-bold text-gray-900">
+          Olá, {currentUser?.nome || 'Usuário'}! 👋
+        </h1>
+        <p className="text-gray-600">Aqui está um resumo das suas finanças</p>
       </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div className="card p-6">
-          <div className="flex items-center">
-            <div className="p-2 bg-primary-100 rounded-lg">
-              <Users className="h-6 w-6 text-primary-600" />
-            </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-600">Usuários</p>
-              <p className="text-2xl font-bold text-gray-900">{stats.usuarios}</p>
-            </div>
-          </div>
-        </div>
-
         <div className="card p-6">
           <div className="flex items-center">
             <div className="p-2 bg-purple-100 rounded-lg">
@@ -120,6 +111,18 @@ const Dashboard = () => {
             <div className="ml-4">
               <p className="text-sm font-medium text-gray-600">Movimentações</p>
               <p className="text-2xl font-bold text-gray-900">{stats.movimentacoes}</p>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-6">
+          <div className="flex items-center">
+            <div className="p-2 bg-success-100 rounded-lg">
+              <TrendingUp className="h-6 w-6 text-success-600" />
+            </div>
+            <div className="ml-4">
+              <p className="text-sm font-medium text-gray-600">Receitas</p>
+              <p className="text-2xl font-bold text-success-600">{formatCurrency(stats.totalReceitas)}</p>
             </div>
           </div>
         </div>
